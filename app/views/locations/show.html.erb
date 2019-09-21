@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1><%= @location.name %></a></h1>
+  <h4><i class="glyphicon glyphicon-road"></i> <strong>Ubicación:</strong> <%= @location.ubication %></h4>
+  <h4><i class="glyphicon glyphicon-globe"></i> <strong>Mapa: </strong></h4>
+  <div style="width: 80%"><iframe width="80%" height="480" 
+    src="https://maps.google.com/maps?width=80%&height=480&hl=es&q=<%= @location.ubication %>+(<%= @location.name %>)
+    &ie=UTF8&t=&z=16&iwloc=B&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+  </div>
+  
+  <% if current_user and current_user.has_role? :admin %>
+    <div class="btn-group">
+      <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_location_path(@location), class: "btn btn-primary" %>
+      <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar'.html_safe, @location, method: :delete, data: {confirm: 'Estás Seguro(a)?'}, class: "btn btn-warning" %>
+    </div>
+  <% end %>
+</div>
+<% if current_user and current_user.has_role? :admin %>
+<div class="actions">
+  <%= link_to '<i class="glyphicon glyphicon-plus"></i> Añadir Sala De Estudio'.html_safe, new_room_path(:current_location => @location.id), class: "btn btn-primary" %>
+</div>
+<% end %>
+
+<h1><i class="glyphicon glyphicon-book"></i> Salas De Estudio</h1>
+<% @rooms.each do |room| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to room.name, room_path(:id => room.id, :origin => 'location') %><br>
+    </h2>
+  </div>
+<% end %>
+<br><br>
+
+<div class="btn-group">
+  <%= link_to 'Volver', locations_path, class: "btn btn-default" %>
+</div>

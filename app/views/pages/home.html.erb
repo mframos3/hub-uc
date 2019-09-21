@@ -1,0 +1,165 @@
+<h1>Bienvenido a HubUC</h1>
+
+
+<% if !current_user %>
+  <h2>Aquí encontrarás salas de estudio, podrás organizar grupos de estudio y tus clases particulares.<h2>
+  <h3> ¿Aburrido(a)? Lee el siguiente dato curioso! </h3>
+  <div class="panel panel-defaults">
+  <div class="panel-body", style="background-color: lightblue">
+  <div class="form-inputs">
+    <% @random_number =  HTTParty.get("https://numbersapi.p.rapidapi.com/random/trivia?max=2019&fragment=true&min=10&json=true",
+    :headers =>{'Content-Type' => 'application/json', 'X-RapidAPI-Host' => "numbersapi.p.rapidapi.com", "X-RapidAPI-Key" => "55529cadf0msh327302d957aa3c6p1c129ejsn1958928fe400" }) %>
+    <h4><strong>Número: </strong><%= @random_number['number'] %></h4>
+    <h4><strong>Dato Curioso: </strong><%= @random_number['text'] %></h4>
+  </div>
+  </div>
+  </div>
+<% else %>
+
+  <div id="blog-carousel" class="owl-carousel">
+  <% if @courses_publications.length > 0 %>
+    <div class="owl-content">
+    <div class="panel panel-default target">
+    <div class="panel-heading" contenteditable="false">
+    <h3> Publicaciones Recientes De Interés </h3>
+    <h5> Las últimas publicaciones de tus cursos inscritos! </h5>
+    </div>
+    <div class="panel-body">
+    <% @courses_publications.each do |pub| %>
+    <div class="panel panel-default">
+    <div class="panel-body", style="background-color: wheat"> 
+      <h4><%= link_to get_course(pub).initials, course_path(:id => get_course(pub).id, :origin => 'home') %></h4>
+      <h3><%= link_to pub.title, post_path(:id => pub.id, :origin => 'home') %> <br>
+      <small class="author">Publicado hace <%= time_ago_in_words(pub.created_at, local: :'es-CL') %> por <%= link_to pub.user.name, user_path(pub.user_id) %></small></h3>
+    </div>
+    </div>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  <% end %>
+  <% total_comments = [] %>
+  <% @courses_publications.each do |pub| %>
+    <% get_comments(pub).each do |comment| %>
+      <% total_comments << comment %>
+    <% end %>
+  <% end %>
+  <% if total_comments.length > 0 %>
+    <div class="owl-content">
+    <div class="panel panel-default target">
+    <div class="panel-heading" contenteditable="false">
+    <h3> Comentarios Recientes De Interés </h3>
+    <h5> Los últimos comentarios en publicaciones de tus cursos inscritos! </h5>
+    </div>
+    <div class="panel-body">
+    <% @courses_publications.each do |pub| %>
+      <% get_comments(pub).each do |comment| %>
+    <div class="panel panel-default">
+    <div class="panel-body", style="background-color: lightyellow"> 
+      <h4> <%= link_to get_author_name(comment), user_path(comment.user_id) %> comentó en <%= link_to pub.title, post_path(:id => pub.id, :origin => 'home') %></h4>
+      <h4> <%= truncate_middle(comment.body, lenght: 30) %> </h4>
+      <h3><small class="author">Publicado hace <%= time_ago_in_words(comment.created_at, local: :'es-CL') %> </small></h3>
+    </div>
+    </div>
+  <% end %>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  <% end %>
+  <% if @study_events.length > 0 %>
+ <div class="owl-content">
+    <div class="panel panel-default target">
+    <div class="panel-heading" contenteditable="false">
+    <h3> Grupos De Estudio Recientes Que Te Podrían Interesar </h3>
+    <h5> Grupos de estudio recientes de tus cursos inscritos! </h5>
+    </div>
+    <div class="panel-body">
+    <% @study_events.each do |event| %>
+    <div class="panel panel-default">
+    <div class="panel-body", style="background-color: lightblue"> 
+      <h4><%= link_to get_room(event).name, room_path(:id => get_room(event).id, :origin => 'home') %></h4>
+      <h3><%= link_to event.name, event_path(:id => event.id, :origin => 'home') %> <br>
+      <small class="author">Publicado hace <%= time_ago_in_words(event.created_at, local: :'es-CL') %> por <%= link_to event.user.name, user_path(event.user_id) %></small></h3>
+    </div>
+    </div>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  <% end %>
+  <% if @offer_events.length > 0 %>
+  <div class="owl-content">
+    <div class="panel panel-default target">
+    <div class="panel-heading" contenteditable="false">
+    <h3> Clases Particulares Recientes Que Te Podrían Interesar </h3>
+    <h5> Clases particulares recientes de cursos en los que eres alumno! </h5>
+    </div>
+    <div class="panel-body">
+    <% @offer_events.each do |event| %>
+    <div class="panel panel-default">
+    <div class="panel-body", style="background-color: lavender"> 
+      <h4><%= link_to get_room(event).name, room_path(:id => get_room(event).id, :origin => 'home') %></h4>
+      <h3><%= link_to event.name, event_path(:id => event.id, :origin => 'home') %> <br>
+      <small class="author">Publicado hace <%= time_ago_in_words(event.created_at, local: :'es-CL') %> por <%= link_to event.user.name, user_path(event.user_id) %></small></h3>
+    </div>
+    </div>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  <% end %>
+  <% if @search_events.length > 0 %>
+  <div class="owl-content">
+    <div class="panel panel-default target">
+    <div class="panel-heading" contenteditable="false">
+    <h3> Grupos Recientes Interesados En Tus Clases Particulares </h3>
+    <h5> Estudiantes buscando clases particulares de cursos en los que eres profesor! </h5>
+    </div>
+    <div class="panel-body">
+    <% @search_events.each do |event| %>
+    <div class="panel panel-default">
+    <div class="panel-body", style="background-color: lavender"> 
+      <h4><%= link_to get_room(event).name, room_path(:id => get_room(event).id, :origin => 'home') %></h4>
+      <h3><%= link_to event.name, event_path(:id => event.id, :origin => 'home') %> <br>
+      <small class="author">Publicado hace <%= time_ago_in_words(event.created_at, local: :'es-CL') %> por <%= link_to event.user.name, user_path(event.user_id) %></small></h3>
+    </div>
+    </div>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  <% end %>
+  </div>
+
+<script>
+$('.loop').owlCarousel({
+    center: true,
+    items:1,
+    loop:true,
+    margin:10,
+    responsive:{
+        600:{
+            items:4
+        }
+    }
+});
+$(".owl-carousel").owlCarousel({
+      loop:true,
+      autoplay: true,
+      center:true,
+      autoheight: true,
+      autoplayspeed: 5000,
+      items : 1, // THIS IS IMPORTANT
+      responsive : {
+            480 : { items : 1  }, // from zero to 480 screen width 4 items
+            768 : { items : 1  }, // from 480 screen widthto 768 6 items
+            1024 : { items : 1   // from 768 screen width to 1024 8 items
+            }
+        },
+  });
+
+</script>
+  
+<% end %>
+

@@ -1,0 +1,17 @@
+<% if @event.e_type == 'Study' %>
+    <h1>Editar Grupo De Estudio</h1>
+<% elsif @event.e_type == 'Offer' %>
+    <h1>Editar Aviso De Clases Particulares (Ofrecer)</h1>
+<% elsif @event.e_type == 'Search' %>
+    <h1>Editar Aviso De Clases Particulares (Buscar)</h1>
+<% elsif @event.e_type == 'Busy' %>
+    <h1>Editar Aviso De Sala Ocupada</h1>
+<% end %>
+<%= render 'form', event: @event %>
+
+<% if (! (current_user.has_role? :admin))  && (! @is_moderator) && (! (current_user.id == @event.user_id)) %>
+<% raise CanCan::AccessDenied.new("Not authorized!", :update, Event) %>
+<% end %>
+<div class="btn-group">
+    <%= link_to 'Volver', room_path(:id => @event.room_id), class: "btn btn-default" %>
+</div>

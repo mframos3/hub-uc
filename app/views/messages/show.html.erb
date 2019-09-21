@@ -1,0 +1,19 @@
+<%if !current_user%>
+  <% raise CanCan::AccessDenied.new("Not authorized!",:read, Message) %>
+<%end%>
+
+<%if !(current_user.id == @message.sender_id || current_user.id == @message.receiver_id)%>
+     <% raise CanCan::AccessDenied.new("Not authorized!",:read, Message) %>
+<%end%>
+
+<h2><i class="glyphicon glyphicon-asterisk"></i> Asunto: <%=@message.title%></h2>
+<% if current_user.id == @receiver.id %>
+  <h2><i class="glyphicon glyphicon-user"></i> De: <%=@sender.name%> (<%=@sender.email%>) </h2>
+<% else %>
+  <h2><i class="glyphicon glyphicon-user"></i> Para: <%=@receiver.name%> (<%=@receiver.email%>)</h2>
+<% end %>
+<h2><i class="glyphicon glyphicon-book"></i> Contenido: </h2> <h3> <%=@message.content%> </h3>
+<br>
+<div class="btn-group">
+    <%= link_to 'Volver', messages_path, class: "btn btn-default" %>
+</div>

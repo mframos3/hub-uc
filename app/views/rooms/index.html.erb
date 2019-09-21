@@ -1,0 +1,9 @@
+<h1>Salas De Estudio</h1>
+
+<% @rooms.each do |room| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to room.name, room %><br>
+    </h2>
+  </div>
+  <% end %>

@@ -1,0 +1,20 @@
+<% if current_user %>
+  <% if @mode == 'Created' %>
+    <h1><i class="glyphicon glyphicon-check"></i> Mis Eventos Creados</h1>
+  <% else %>
+    <h1><i class="glyphicon glyphicon-time"></i> Mis Eventos Por Asistir</h1>
+  <% end %>
+  <% @events.each do |event| %>
+    <div class="link row clearfix">
+      <h2>
+        <%= link_to event.name, event_path(:id => event.id, :origin => @mode) %><br>
+        <small class="author">Creado hace <%= time_ago_in_words(event.created_at, local: :'es-CL') %>
+      </h2>
+    </div>
+  <% end %>
+  <br><br>
+
+  <div class="btn-group">
+    <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+  </div>
+<% end %>

@@ -1,0 +1,13 @@
+<h1>Editar Publicación</h1>
+<% if not current_user.has_role? :admin %>
+<% if ! @is_moderator %>
+<% if ! current_user.id == @post.user_id %>
+<% raise CanCan::AccessDenied.new("Not authorized!",:update, Post) %>
+<% end %>
+<% end %>
+<% end %>
+<%= render 'form', post: @post %>
+
+<div class="btn-group">
+    <%= link_to 'Volver', post_path(@post), class: "btn btn-default" %>
+</div>

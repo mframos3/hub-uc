@@ -1,0 +1,66 @@
+<div class="page-header">
+
+ <h1><%= @post.title %></a><br><small>Publicado por <%= link_to @post.user.name, user_path(@post.user.id) %></small></h1>
+ <h4><i class="glyphicon glyphicon-list-alt"></i> <strong>Descripción:</strong> <%= @post.description %></h4>
+ <h4><i class="glyphicon glyphicon-thumbs-up"></i> <strong>Reputación: </strong><%=@post.score%></h4>
+ <% if current_user %>
+
+ <div class="btn-group">
+    <% if current_user.has_role? :admin or current_user.id == @post.user_id or @is_moderator %>
+        <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_post_path(@post), class: "btn btn-primary" %>
+        <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar'.html_safe, @post, method: :delete, data: { confirm: 'Estás Seguro(a)?' }, class: "btn btn-warning" %>
+    <% end %>
+    <%- unless current_user.favorite_posts.exists?(id: @post.id) -%>
+    <%= link_to '<i class="glyphicon glyphicon-star-empty"></i> Agregar a Favoritos'.html_safe, favorite_posts_path(post_id: @post), method: :post, class: "btn btn-info" %>
+    <%- else -%>
+    <%= link_to '<i class="glyphicon glyphicon-star"></i> Eliminar de Favoritos'.html_safe, favorite_post_path(@post), method: :delete, class: "btn btn-danger" %>
+    <%- end -%>
+    <%if current_user.voted_up_on? @post%>
+    <%= link_to like_post_path(@post), method: :put, class: "btn btn-success" do %>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%else%>
+    <%= link_to like_post_path(@post), method: :put, class: "btn btn-default" do %>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%end%>
+    <%if current_user.voted_down_on? @post%>
+    <%= link_to dislike_post_path(@post), method: :put, class: "btn btn-danger" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+    <%else%>
+    <%= link_to dislike_post_path(@post), method: :put, class: "btn btn-default" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+    <%end%>
+</div>
+<% end %>
+</div>
+
+<h4><%= @post.content %></h4>
+
+<h3 class="comments_title">
+  <i class="glyphicon glyphicon-comment"></i> <%= @post.comments.count %> Comentarios
+</h3>
+<br>
+<div id="add_comment">
+ <%= render partial: "/comments/form", locals: {commentable: @post} %>
+</div>
+<br>
+<div id="comments">
+ <%= render partial: @post.comments.order(created_at: :desc), locals: {commentable: @post} %>
+</div>
+
+<% if @origin == 'home' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+  </div>
+<% elsif @origin == 'profile' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', user_path(:id => @profile), class: "btn btn-default" %>
+  </div>
+<% else %>
+  <div class="btn-group">
+    <%= link_to 'Volver', course_path(@post.course_id), class: "btn btn-default" %>
+  </div>
+<% end %>

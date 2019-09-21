@@ -1,0 +1,44 @@
+<%= form_with(model: moderator_request, local: true) do |form| %>
+  <% if moderator_request.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(moderator_request.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+      <% moderator_request.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if @creating %>
+  <div class="panel panel-default">
+  <div class="panel-body">
+  <div class="form-inputs">
+  <div class="form-group">
+    <%= form.label :Solicitud %>
+    <%= form.text_field :request, class: "form-control",id: :moderator_request_request, :required => 'required' %>
+  </div>
+  </div>
+  </div>
+  </div>
+    <%= form.hidden_field :course_id, :value => @course.id %>
+    <%= form.hidden_field :user_id, :value => current_user.id %>
+    <%= form.hidden_field :status, :value => 'En revisión' %>
+  <% else %>
+  <div class="form-group">
+    <%= form.label :Desición %>
+    <%= form.select :status, options_for_select(@options), class: "form-control",id: :moderator_request_status, :required => 'required' %>
+  </div>
+    <%= form.hidden_field :course_id, :value => @moderator_request.course_id %>
+    <%= form.hidden_field :user_id, :value => @moderator_request.user_id %>
+    <%= form.hidden_field :request, :value => @moderator_request.request %>
+  <% end %>
+
+  <div class="form-group">
+    <% if @creating %>
+      <%= form.submit "Enviar", class: "btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Enviar Desición", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+<% end %>

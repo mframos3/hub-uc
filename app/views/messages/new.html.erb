@@ -1,0 +1,17 @@
+<h1>Enviar Mensaje</h1>
+
+<%if !current_user%>
+  <% raise CanCan::AccessDenied.new("Not authorized!",:read, Message) %>
+<%end%>
+
+<%= render 'form', message: @message %>
+
+<% if @origin == 'profile' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', user_path(@receiver), class: "btn btn-default" %>
+  </div>
+<% else %>
+  <div class="btn-group">
+    <%= link_to 'Volver', messages_path, class: "btn btn-default" %>
+  </div>
+<% end %>

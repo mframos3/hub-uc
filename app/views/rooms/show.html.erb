@@ -1,0 +1,124 @@
+<div class="page-header">
+  <h1><%= @room.name %></a></h1>
+  <h4><i class="glyphicon glyphicon-picture"></i> <strong>Ubicación:</strong> <%= @room.ubication %></h4>
+  <h4><i class="glyphicon glyphicon-map-marker"></i> <strong>Campus:</strong> <%= @room.location.name %></h4>
+  <h4><i class="glyphicon glyphicon-check"></i> <strong>Disponibilidad:</strong> <%= @room.availability %>
+  <%if current_user %>
+    <%if current_user.voted_up_on? @room, vote_scope: 'availability' %>
+      <%= link_to like_availability_room_path(@room), method: :put, class: "small btn btn-success" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%else%>
+      <%= link_to like_availability_room_path(@room), method: :put, class: "small btn btn-default" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%end%>
+      <%if current_user.voted_down_on? @room, vote_scope: 'availability'%>
+      <%= link_to dislike_availability_room_path(@room), method: :put, class: "small btn btn-danger" do %>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+      <%else%>
+      <%= link_to dislike_availability_room_path(@room), method: :put, class: "small btn btn-default" do %>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+    <%end%>
+  <%end%>
+  </h4>
+  <h4><i class="glyphicon glyphicon-bullhorn"></i> <strong>Ruido:</strong> <%= @room.noise %>
+  <%if current_user %>
+    <%if current_user.voted_up_on? @room, vote_scope: 'noise'%>
+      <%= link_to like_noise_room_path(@room), method: :put, class: "small btn btn-success" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%else%>
+      <%= link_to like_noise_room_path(@room), method: :put, class: "small btn btn-default" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%end%>
+      <%if current_user.voted_down_on? @room, vote_scope: 'noise'%>
+      <%= link_to dislike_noise_room_path(@room), method: :put, class: "small btn btn-danger" do%>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+      <%else%>
+      <%= link_to dislike_noise_room_path(@room), method: :put, class: "small btn btn-default" do%>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+    <%end%>
+  <%end%>
+  </h4>
+  <h4><i class="glyphicon glyphicon-flash"></i> <strong>Enchufes:</strong> <%= @room.plugs %>
+  <%if current_user %>
+    <%if current_user.voted_up_on? @room, vote_scope: 'plugs'%>
+      <%= link_to like_plugs_room_path(@room), method: :put, class: "small btn btn-success" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%else%>
+      <%= link_to like_plugs_room_path(@room), method: :put, class: "small btn btn-default" do%>
+      <span class="glyphicon glyphicon-thumbs-up"></span>
+      <%end%>
+      <%end%>
+      <%if current_user.voted_down_on? @room, vote_scope: 'plugs'%>
+      <%= link_to dislike_plugs_room_path(@room), method: :put, class: "small btn btn-danger" do%>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+      <%else%>
+      <%= link_to dislike_plugs_room_path(@room), method: :put, class: "small btn btn-default" do%>
+      <span class="glyphicon glyphicon-thumbs-down"></span>
+      <%end%>
+    <%end%>
+  <%end%>
+  </h4>
+  <% if current_user and current_user.has_role? :admin %>
+    <div class="btn-group">
+      <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_room_path(@room), class: "btn btn-primary" %>
+      <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar'.html_safe, @room, method: :delete, data: { confirm: 'Estás Seguro(a)?' }, class: "btn btn-warning" %>
+    </div>
+  <% end %>
+</div>
+<% if current_user %>
+<div class="actions">
+  <% if is_student? || is_teacher? %>
+    <%= link_to '<i class="glyphicon glyphicon-plus"></i> Crear Grupo de Estudio'.html_safe, new_event_path(:category => 'Study', :current_room => @room.id), class: "btn btn-info" %>
+  <% end %>
+  <% if is_student? %>
+    <%= link_to '<i class="glyphicon glyphicon-plus"></i> Buscar Clases Particulares'.html_safe, new_event_path(:category => 'Search', :current_room => @room.id), class: "btn btn-info" %>
+  <% end %>
+  <% if is_teacher? %>
+    <%= link_to '<i class="glyphicon glyphicon-plus"></i> Ofrecer Clases Particulares'.html_safe, new_event_path(:category => 'Offer', :current_room => @room.id), class: "btn btn-info" %>
+  <% end %>
+  <%= link_to '<i class="glyphicon glyphicon-plus"></i> Nuevo Aviso de Sala Ocupada'.html_safe, new_event_path(:category => 'Busy', :current_room => @room.id), class: "btn btn-info" %>
+</div>
+<% end %>
+<h1><i class="glyphicon glyphicon-calendar"></i> Eventos Actuales</h1>
+<% @events.each do |event| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to event.name, event_path(:id => event.id, :origin => 'room') %><br>
+      <small class="author">Creado hace <%= time_ago_in_words(event.created_at, local: :'es-CL') %> por 
+      <%= link_to event.user.name, user_path(event.user.id) %></small>
+    </h2>
+  </div>
+<% end %>
+<br><br>
+
+<h3 class="comments_title">
+  <i class="glyphicon glyphicon-comment"></i> <%= @room.comments.count %> Comentarios
+</h3>
+<br>
+<div id="add_comment">
+ <%= render partial: "/comments/form", locals: {commentable: @room} %>
+</div>
+<br>
+<div id="comments">
+ <%= render partial: @room.comments.order(created_at: :desc), locals: {commentable: @room} %>
+</div>
+
+<% if @origin == 'home' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+  </div>
+<% else %>
+  <div class="btn-group">
+    <%= link_to 'Volver', location_path(:id => @room.location_id), class: "btn btn-default" %>
+  </div>
+<% end %>

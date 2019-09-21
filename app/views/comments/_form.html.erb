@@ -1,0 +1,9 @@
+<% if current_user %>
+<%= simple_form_for [commentable, Comment.new] do |f| %>
+ <div class="field">
+  <%= f.text_area :body, class: "form-control", required: true %>
+ </div>
+ <br>
+ <%= f.submit "Añadir Comentario", class: "btn btn-primary" %>
+<% end %>
+<% end %>

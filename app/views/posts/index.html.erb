@@ -1,0 +1,11 @@
+<h1>Publicaciones</h1>
+
+<% @posts.each do |post| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to post.title, post %><br>
+      <small class="author">Publicado hace <%= time_ago_in_words(post.created_at, local: :'es-CL') %> por 
+      <%= link_to post.user.name, user_path(post.user.id) %></small>
+    </h2>
+  </div>
+  <% end %>

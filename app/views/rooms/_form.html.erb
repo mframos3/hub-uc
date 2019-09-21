@@ -1,0 +1,45 @@
+<%= form_with(model: room, local: true) do |form| %>
+  <% if room.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room.errors.count, "error") %> prohibited this room from being saved:</h2>
+      <ul>
+      <% room.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="panel panel-default">
+  <div class="panel-body">
+  <div class="form-inputs">
+
+  <div class="form-group">
+    <%= form.label :Nombre %>
+    <%= form.text_field :name, class: "form-control", id: :room_name, :required => 'required' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :Ubicación %>
+    <%= form.text_field :ubication, class: "form-control", id: :room_ubication, :required => 'required' %>
+  </div>
+
+  <%= form.hidden_field :location_id, value: @location %>
+  
+  <div class="form-group">
+  <% if @editing %>
+    <%= form.hidden_field :availability, value: @room.availability %>
+    <%= form.hidden_field :sockets, value: @room.sockets %>
+    <%= form.hidden_field :noise, value: @room.noise %>
+    <%= form.submit "Actualizar Sala De Estudio", class: "btn btn-primary" %>
+  <% else %>
+    <%= form.hidden_field :availability, value: 0 %>
+    <%= form.hidden_field :sockets, value: 0 %>
+    <%= form.hidden_field :noise, value: 0 %>
+    <%= form.submit "Añadir Sala De Estudio", class: "btn btn-primary" %>
+  <% end %>
+  </div>
+  </div>
+  </div>
+  </div>
+<% end %>

@@ -1,0 +1,38 @@
+<%= form_with(model: location, local: true) do |form| %>
+  <% if location.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(location.errors.count, "error") %> prohibited this location from being saved:</h2>
+      <ul>
+      <% location.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="panel panel-default">
+  <div class="panel-body">
+  <div class="form-inputs">
+
+  <div class="form-group">
+    <%= form.label :Nombre %>
+    <%= form.text_field :name, class:'form-control', id: :location_name, required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :Ubicación %>
+    <%= form.text_field :ubication, class:'form-control', id: :location_ubication, required: true %>
+  </div>
+
+  <div class="actions">
+    <% if @editing %>
+      <%= form.submit "Actualizar Campus", class:"btn btn-primary" %>
+    <% else %>
+      <%= form.submit "Añadir Campus", class:"btn btn-primary" %>
+    <% end %>
+  </div>
+
+  </div>
+  </div>
+  </div>
+<% end %>

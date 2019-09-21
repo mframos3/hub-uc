@@ -1,0 +1,67 @@
+<%= div_for(comment) do %>
+ <div class="comments_wrapper clearfix">
+  <div class="pull-left">
+  <% if comment.user.image? %>
+   <%= image_tag(comment.user.image.url, width: 50, height: 50, border: 0, class: 'img-circular') %>
+  <% else %>
+  <%= image_tag("default.png", width: 50, height: 50, border: 0, class: 'img-circular') %>
+  <% end %>
+   <p class="lead"><%= comment.body %></p>
+   <p><small>Enviado hace <strong><%= time_ago_in_words(comment.created_at, local: :'es-CL') %></strong> por
+    <%= link_to comment.user.name, user_path(:id => comment.user.id) %></small></p>
+  </div>
+
+<div class="btn-group pull-right">
+  <%  if current_user and (comment.user == current_user or current_user.has_role? :admin or @is_moderator) %>
+  <% if commentable.is_a?(Post)%>
+  <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_post_comment_path(commentable, comment) , class: "btn btn-sm btn-primary" %>
+  <% elsif commentable.is_a?(Room)%>
+  <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_room_comment_path(commentable, comment) , class: "btn btn-sm btn-primary" %>
+  <% end %>
+  <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar Comentario'.html_safe, comment, method: :delete, data: { confirm: 'Estas segur@?' }, class: "btn btn-sm btn-warning" %>
+  <%end%>
+  <% if commentable.is_a?(Post) && current_user %>
+  <%if current_user.voted_up_on? comment%>
+    <%= link_to like_post_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-success" do%>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%else%>
+    <%= link_to like_post_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-default" do%>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%end%>
+    <%if current_user.voted_down_on? comment%>
+    <%= link_to dislike_post_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-danger" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+    <%else%>
+    <%= link_to dislike_post_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-default" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+    <%end%>
+   <% elsif commentable.is_a?(Room) && current_user %>
+    <%if current_user.voted_up_on? comment%>
+    <%= link_to like_room_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-success" do%>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%else%>
+    <%= link_to like_room_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-default" do%>
+    <span class="glyphicon glyphicon-thumbs-up"></span>
+    <%end%>
+    <%end%>
+    <%if current_user.voted_down_on? comment%>
+    <%= link_to dislike_room_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-danger" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+    <%else%>
+    <%= link_to dislike_room_comment_path(commentable, comment), method: :put, class: "btn btn-sm btn-default" do%>
+    <span class="glyphicon glyphicon-thumbs-down"></span>
+    <%end%>
+  <%end%>
+  <%end%>
+  <br>
+  <h3><small><strong>Reputación: </strong><%=comment.score%></small></h3>
+</div>
+
+</div>
+<% end %>

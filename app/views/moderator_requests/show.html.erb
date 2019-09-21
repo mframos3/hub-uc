@@ -1,0 +1,39 @@
+<%if ! current_user%>
+    <% raise CanCan::AccessDenied.new("Not authorized!",:create, ModeratorRequest) %>
+<%end%>
+
+<%if current_user.id == @moderator_request.user_id%>
+    <h1> <%= @moderator_request.request%> </h1>
+    <h3><i class="glyphicon glyphicon-education"></i> Curso: <%= Course.find(@moderator_request.course_id).initials %></h3>
+    <% if @moderator_request.status == "Aceptado" %>
+        <h3><i class="glyphicon glyphicon-ok"></i> Estado: <%= @moderator_request.status%></h3>
+    <% elsif @moderator_request.status == "Rechazado" %>
+        <h3><i class="glyphicon glyphicon-ban-circle"></i> Estado: <%= @moderator_request.status%></h3>
+    <% else %>
+        <h3><i class="glyphicon glyphicon-time"></i> Estado: <%= @moderator_request.status%></h3>
+    <% end %>
+<%elsif current_user.has_role? :moderator or current_user.has_role? :admin %>
+    <% user = User.find(@moderator_request.user_id)%>
+    <h1> <%= @moderator_request.request%> </h1>
+    <h3><i class="glyphicon glyphicon-user"></i> Usuario: <%=link_to user.name, user%></h3>
+    <h3><i class="glyphicon glyphicon-education"></i> Curso: <%= Course.find(@moderator_request.course_id).initials %></h3>
+    <% if @moderator_request.status == "Aceptado" %>
+        <h3><i class="glyphicon glyphicon-ok"></i> Estado: <%= @moderator_request.status%></h3>
+    <% elsif @moderator_request.status == "Rechazado" %>
+        <h3><i class="glyphicon glyphicon-ban-circle"></i> Estado: <%= @moderator_request.status%></h3>
+    <% else %>
+        <h3><i class="glyphicon glyphicon-time"></i> Estado: <%= @moderator_request.status%></h3>
+    <% end %>
+    <%if !(@moderator_request.status == "Aceptado")%>
+    <br>
+    <% if @moderator_request.status == 'En revisión' %>
+        <div class="btn-group">
+            <%= link_to 'Aceptar/Rechazar', edit_moderator_request_path(@moderator_request), class: "btn btn-primary" %>
+        </div>
+    <% end %>
+    <% end %>
+<%end%>
+<br><br>
+<div class="btn-group">
+  <%= link_to 'Volver', moderator_requests_path, class: "btn btn-default" %>
+</div>

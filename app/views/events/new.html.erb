@@ -1,0 +1,15 @@
+<% if @e_type == 'Study' %>
+    <h1>Nuevo Grupo De Estudio</h1>
+<% elsif @e_type == 'Offer' %>
+    <h1>Nuevo Aviso De Clases Particulares (Ofrecer)</h1>
+<% elsif @e_type == 'Search' %>
+    <h1>Nuevo Aviso De Clases Particulares (Buscar)</h1>
+<% elsif @e_type == 'Busy' %>
+    <h1>Nuevo Aviso De Sala Ocupada</h1>
+<% end %>
+
+<%= render 'form', event: @event %>
+
+<div class="btn-group">
+    <%= link_to 'Volver', room_path(:id => @current_room), class: "btn btn-default" %>
+</div>

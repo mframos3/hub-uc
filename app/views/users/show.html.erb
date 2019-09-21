@@ -1,0 +1,115 @@
+<div class="container target" style="width: 100%; margin-left: auto;">
+  <div class="row">
+    <div class="col-sm-10">
+      <h1 class=""><%= @user.name %></h1>
+      <% if current_user == @user %>
+        <br>
+        <div class="btn-group">
+          <%= link_to '<i class="glyphicon glyphicon-envelope"></i> Ir a Mensajería'.html_safe, messages_path, class: "btn btn-primary" %>
+        </div>
+      <% elsif current_user %>
+        <br>
+        <div class="btn-group">
+          <%= link_to '<i class="glyphicon glyphicon-send"></i> Enviar Mensaje'.html_safe, new_message_path(:origin => 'profile', :receiver_id => @user.id), class: "btn btn-primary" %>
+        </div>
+      <% end %>
+      <br>
+    </div>
+    <div class="col-sm-2">
+      <a href="/users" class="pull-right">
+        <% if @user.image? %>
+        <%= image_tag(@user.image.url, width: 140, height: 140, border: 0, class: 'img-circular') %>
+        <% else %>
+        <%= image_tag("default.png", width: 140, height: 140, border: 0, class: 'img-circular') %>
+        <% end %>
+      </a>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-3">
+      <ul class="list-group">
+        <li class="list-group-item text-muted" contenteditable="false"><i class="glyphicon glyphicon-user"></i> Perfil</li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Se Unió A HubUC:</strong></span> <%=@user.created_at.strftime("%d/%m/%Y")%></li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Última Conexión:</strong></span> Hace <%=time_ago_in_words(@user.last_seen_at, local: :'es-CL')%></li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Email:</strong></span> <%=@user.email%></li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Rol:</strong></span>
+          <%= if !@user_role[1]
+                "Usuario Común"
+              elsif @user_role[1].name == "admin"
+                "Administrador"
+              elsif @user_role[1].name == "moderator"
+                "Moderador"
+              end%>
+        </li>
+        </ul>
+        <div class="panel panel-default">
+          <div class="panel-heading"><i class="glyphicon glyphicon-briefcase"></i> Cursos Donde Es Profesor</div>
+          <div class="panel-body">
+              <% @teacher_courses.each do |course|%>
+              <span class='label label-info'>
+              <%= link_to course.initials, course_path(:id => course.id, :origin => 'profile', :profile => @user.id) %>
+              </span>
+              <%end%>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading"><i class="glyphicon glyphicon-education"></i> Cursos Donde Es Alumno</div>
+          <div class="panel-body">
+              <% @student_courses.each do |course|%>
+              <span class='label label-info'>
+              <%= link_to course.initials, course_path(:id => course.id, :origin => 'profile', :profile => @user.id) %>
+              </span>
+              <%end%>
+          </div>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item text-muted"><i class="glyphicon glyphicon-stats"></i> Estadísticas</li>
+          <li class="list-group-item text-right"><span class="pull-left"><strong class="">Eventos Creados:</strong></span><%=@user_events_count%></li>
+          <li class="list-group-item text-right"><span class="pull-left"><strong class="">Likes/Dislikes:</strong></span><%= @user.find_voted_items.size %></li>
+          <li class="list-group-item text-right"><span class="pull-left"><strong class="">Publicaciones:</strong></span> <%=@user_posts_count%></li>
+          <li class="list-group-item text-right"><span class="pull-left"><strong class="">Comentarios:</strong></span> <%=@user_comments_count%></li>
+        </ul>
+        <div class="panel panel-default">
+          <div class="panel-heading"><i class="glyphicon glyphicon-user"></i><i class="glyphicon glyphicon-user"></i> Conoce Al Resto De Usuarios! </div>
+            <div class="panel-body">
+            <div class="btn-group">
+              <%= link_to "Ver Lista", users_path, class: "btn btn-success" %>
+            </div> 
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-9" style="" contenteditable="false">
+          <div class="panel panel-default">
+            <div class="panel-heading"><i class="glyphicon glyphicon-list-alt"></i> Cursos </div>
+              <div class="panel-body">
+                <% @user.courses.each do |course| %>
+                <span class='label label-info'>
+                <%= link_to course.initials, course_path(:id => course.id, :origin => 'profile', :profile => @user.id) %>
+                </span>
+                <% end %>
+              </div>
+            </div>
+            <div class="panel panel-default target">
+              <div class="panel-heading" contenteditable="false"><i class="glyphicon glyphicon-star"></i> Publicaciones Favoritas </div>
+                <div class="panel-body">
+                  <div class="row">
+                  <% @user.favorite_posts.each do |post| %>
+                    <div class="col-md-4">
+                      <div class="thumbnail", style="background-color: lightyellow">
+                        <div class="caption">
+                          <h3>
+                          <%= link_to post.title, post_path(:id => post.id, :origin => 'profile', :profile => @user.id) %>
+                          </h3>
+                          <p>
+							            <small class="author"> Publicado hace <%= time_ago_in_words(post.created_at, local: :'es-CL') %> por 
+                          <%= link_to post.user.name, user_path(post.user_id) %></small>
+						              </p>
+                          <br>
+                        </div>
+					            </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>

@@ -1,0 +1,50 @@
+<%if !current_user%>
+    <% raise CanCan::AccessDenied.new("Not authorized!",:read, ModeratorRequest) %>
+<%end%>
+
+<% if current_user.has_role? :admin %>
+<h1><i class="glyphicon glyphicon-hourglass"></i> Solicitudes De Moderador En Espera</h1>
+    <% if @moderator_requests.length == 0 %>
+      <h3> No Hay Nada! </h3>
+    <% end %>
+    <% @moderator_requests.each do |moderator_request| %>
+    <div class="link row clearfix">
+      <h3>
+        <%request_user = User.find(moderator_request.user_id)%>
+        <%request_course = Course.find(moderator_request.course_id)%>
+        <li>Usuario: <%=link_to request_user.name, request_user%>, Curso: <%=request_course.initials%> | <%= link_to 'Ver Solicitud', moderator_request %></li>
+      </h3>
+    </div>
+    <% end %>
+<% elsif current_user.has_role? :moderator %>
+  <h1><i class="glyphicon glyphicon-hourglass"></i> Solicitudes De Moderador En Espera</h1>
+    <% if @request_for_courses.length == 0 %>
+      <h3> No Hay Nada! </h3>
+    <% end %>
+    <% @request_for_courses.each do |moderator_request| %>
+    <div class="link row clearfix">
+      <h3>
+        <%request_user = User.find(moderator_request.user_id)%>
+        <%request_course = Course.find(moderator_request.course_id)%>
+        <li>Usuario: <%=link_to request_user.name, request_user%>, Curso: <%=request_course.initials%> | <%= link_to 'Ver Solicitud', moderator_request %></li>
+      </h3>
+    </div>
+    <% end %>
+<%end%>
+
+<h1><i class="glyphicon glyphicon-bookmark"></i> Mis Solicitudes De Moderador</h1>
+    <% if @my_requests.length == 0 %>
+      <h3> No Hay Nada! </h3>
+    <% end %>
+    <% @my_requests.each do |moderator_request| %>
+    <div class="link row clearfix">
+    <h3>
+      <% @current_course = Course.find(moderator_request.course_id)%>
+      <li>Curso: <%=@current_course.initials%>, Estado: <%=moderator_request.status%> | <%= link_to 'Ver Solicitud', moderator_request%></li>
+    </h3>
+    </div>
+    <% end %>
+<br><br>
+<div class="btn-group">
+  <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+</div>

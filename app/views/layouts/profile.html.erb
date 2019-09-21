@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HubUC</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <header class="navbar navbar-default" role="navigation">
+    <div class="navbar-inner">
+      <div class="container">
+        <div id="logo" class="navbar-brand"><%= link_to '<i class="glyphicon glyphicon-home"></i> HubUC'.html_safe, root_path %></div>
+        <nav class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to '<i class="glyphicon glyphicon-map-marker"></i> Navegar por los Campus'.html_safe, locations_path %></li>
+          <% if user_signed_in? -%>
+            <li><%= link_to '<i class="glyphicon glyphicon-search"></i> Todos Los Cursos'.html_safe, courses_path(:option => 'All') %></li>
+            <li><%= link_to '<i class="glyphicon glyphicon-user"></i><i class="glyphicon glyphicon-user"></i> Ver Usuarios'.html_safe, users_path %></li>
+            <li class="dropdown"><a class="dropdown-toggle" href data-toggle="dropdown">
+            <i class="glyphicon glyphicon-menu-hamburger"></i><b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><%= link_to '<i class="glyphicon glyphicon-education"></i> Mis Cursos'.html_safe, courses_path(:option => 'Joined') %></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-pencil"></i> Inscribir Cursos'.html_safe, courses_path(:option => 'Join') %></li>
+                <li class="divider"></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-check"></i> Eventos Creados'.html_safe, events_path(:option => 'Created') %></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-time"></i> Eventos Por Asistir'.html_safe, events_path(:option => 'Joined') %></li>
+                <li class="divider"></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-briefcase"></i> Solicitudes De Moderador'.html_safe, moderator_requests_path %></li>
+                <li class="divider"></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-envelope"></i> Mensajería'.html_safe, messages_path %></li>
+                <li class="divider"></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-user"></i> Mi Perfil'.html_safe, user_path(:id => current_user.id) %></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-cog"></i> Ajustes'.html_safe, edit_user_registration_path %></li>
+                <li class="divider"></li>
+                <li><%= link_to '<i class="glyphicon glyphicon-log-out"></i> Salir'.html_safe, destroy_user_session_path, :method => :delete %></li>
+              </ul>
+            </li>
+          </ul>
+          <% else -%>
+            <li><%= link_to '<i class="glyphicon glyphicon-search"></i> Cursos'.html_safe, courses_path(:option => 'All') %></li>
+            <li><%= link_to '<i class="glyphicon glyphicon-user"></i><i class="glyphicon glyphicon-user"></i> Ver Usuarios'.html_safe, users_path %></li>
+            <ul class="nav navbar-nav pull-right">
+              <li><%= link_to '<i class="glyphicon glyphicon-edit"></i> Nueva Cuenta'.html_safe, new_user_registration_path %></li>
+              <li><%= link_to '<i class="glyphicon glyphicon-log-in"></i> Iniciar Sesión'.html_safe, new_user_session_path %></li>
+            </ul>
+          <% end -%>
+        </nav>
+      </div>
+    </div>
+  </header>
+<div id="main_content" class="container">
+    <% flash.each do |name, msg| %>
+      <%= content_tag(:div, msg, class: "alert alert-info") %>
+    <% end %>
+<div id="content" class="col-md-auto center-block">
+  <%= yield %>
+    </div>
+    </div>
+  </div>
+</body>
+</html>

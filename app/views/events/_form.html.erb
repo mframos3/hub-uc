@@ -1,0 +1,96 @@
+<%= form_with(model: event, local: true) do |form| %>
+  <% if event.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
+      <ul>
+      <% event.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="panel panel-default">
+  <div class="panel-body">
+    <div class="form-inputs">
+      <div class="form-group">
+        <%= form.label :Asunto %>
+        <%= form.text_field :name, class: "form-control", id: :event_name, :required => 'required' %>
+      </div>
+      
+      <% if @e_type == 'Study' %>
+        <%= form.hidden_field :price, value: 0 %>
+        <div class="form-group">
+          <%= form.label :Curso %>
+          <%= form.select :course_id, options_for_select(@options), class: "form-control", id: :course_id , :required => 'required' %>
+        </div>
+        <div class="form-group">
+          <%= form.label :Cantidad_Máxima_De_Personas %>
+          <%= form.number_field :max_amount, min: 1, max: 1000, class: "form-control", id: :event_max_amount, :required => 'required' %>
+        </div>
+      <% elsif @e_type == 'Offer' %>
+        <%= form.hidden_field :max_amount, value: 0 %>
+        <div class="form-group">
+          <%= form.label :Curso %>
+          <%= form.select :course_id, options_for_select(@options), class: "form-control", id: :course_id , :required => 'required'%>
+        </div>
+        <div class="form-group">
+          <%= form.label :Precio %>
+          <%= form.number_field :price, min: 0, class: "form-control", id: :event_price , :required => 'required'%>
+        </div>
+      <% elsif @e_type == 'Search' %>
+        <%= form.hidden_field :price, value: 0 %>
+        <%= form.hidden_field :max_amount, value: 0 %>
+        <div class="form-group">
+          <%= form.label :Curso %>
+          <%= form.select :course_id, options_for_select(@options), class: "form-control", id: :course_id, :required => 'required' %>
+        </div>
+      <% elsif @e_type == 'Busy' %>
+        <div class="form-group">
+          <%= form.label :Curso_Asociado%>
+          <%= form.select :course_id, options_for_select(@options), class: "form-control", id: :course_id , :required => 'required'%>
+        </div>
+        <%= form.hidden_field :price, value: 0 %>
+        <%= form.hidden_field :max_amount, value: 0 %>
+      <% elsif @e_type == 'Edit' %>
+        <% if @event.e_type == 'Study' %>
+          <%= form.hidden_field :price, value: 0 %>
+        <% elsif @event.e_type == 'Offer'%>
+          <div class="form-group">
+            <%= form.label :Precio %>
+            <%= form.number_field :price, min: 0, class: "form-control", id: :event_price , :required => 'required'%>
+          </div>
+        <% elsif @e_type == 'Search' or @e_type == 'Busy' %>
+          <%= form.hidden_field :price, value: 0 %>
+        <% end %>
+      <% end %>
+      
+      <div class="form-group">
+        <%= form.label :Fecha_Término %>
+        <%= form.datetime_field :f_date, min: DateTime.current, max: DateTime.current + 100.years,
+         class: "form-control", id: :event_f_date , :required => 'required'%>
+      </div>
+
+      <% if @creating %>
+        <%= form.hidden_field :e_type, value: @e_type %>
+        <%= form.hidden_field :user_id, value: @current_user.id %>
+        <%= form.hidden_field :room_id, value: @current_room %>
+      <% else %>
+        <%= form.hidden_field :e_type, value: @event.e_type %>
+        <%= form.hidden_field :user_id, value: @event.user_id %>
+        <%= form.hidden_field :room_id, value: @event.room_id %>
+        <%= form.hidden_field :course_id, value: @event.course_id %>
+        <%= form.hidden_field :max_amount, value: @event.max_amount %>
+      <% end %>
+
+      <div class="form-group">
+      <% if @creating %>
+        <%= form.submit "Crear Evento", class: "btn btn-primary" %>
+      <% else %>
+        <%= form.submit "Actualizar Evento", class: "btn btn-primary" %>
+      <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

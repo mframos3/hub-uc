@@ -1,0 +1,70 @@
+<div class="page-header">
+  <% if current_user && (current_user.has_role? :admin) && @mode == 'All' %>
+      <div class="actions">
+      <%= link_to '<i class="glyphicon glyphicon-plus"></i> Añadir Curso'.html_safe, new_course_path, class: "btn btn-primary" %>
+      </div>
+  <% end %>
+
+<% if @mode == 'Joined' %>
+  <h1><i class="glyphicon glyphicon-education"></i> Mis Cursos Como Alumno </h1>
+  <% if @inscriptions_s.length == 0 %>
+      <h2> No Hay Nada! </h2>
+  <% end %>
+  <% @inscriptions_s.each do |course| %>
+    <div class="link row clearfix">
+      <h2>
+        <%= link_to course.name, course_path(:id => course.id, :origin => 'Joined') %>
+        <small><%= course.initials %></small>
+      </h2>
+    </div>
+  <% end %>
+  <h1><i class="glyphicon glyphicon-briefcase"></i> Mis Cursos Como Profesor Particular </h1>
+  <% if @inscriptions_t.length == 0 %>
+      <h2> No Hay Nada! </h2>
+  <% end %>
+  <% @inscriptions_t.each do |course| %>
+    <div class="link row clearfix">
+      <h2>
+        <%= link_to course.name, course_path(:id => course.id, :origin => 'Joined') %>
+        <small><%= course.initials %></small>
+      </h2>
+    </div>
+  <% end %>
+<% elsif @mode == 'All' %>
+  <h1><i class="glyphicon glyphicon-th-list"></i> Lista De Cursos </h1>
+  <br>
+  <%= form_tag(courses_path, method: :get) do %>
+    <div class="form-group">
+      <%= text_field_tag(:search, params[:search]) %>
+      <%= hidden_field_tag :option, 'All' %>
+      <%= submit_tag "Buscar", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+  <% @courses.each do |course| %>
+    <div class="link row clearfix">
+      <h2>
+        <%= link_to course.name, course_path(:id => course.id, :origin => 'All') %>
+        <small><%= course.initials %></small>
+      </h2>
+    </div>
+  <% end %>
+<% else %>
+  <h1><i class="glyphicon glyphicon-pencil"></i> Inscribir Cursos </h1>
+  <%= form_tag(courses_path, method: :get) do %>
+    <div class="form-group">
+      <%= select_tag :selected, options_for_select(@options), prompt: "Selecciona el Curso", class: "form-control" %>
+      <%= hidden_field_tag :join, true %>
+      <br>
+      <%= select_tag :role, options_for_select(@role), prompt: "Selecciona el Tipo de Inscripción", class: "form-control"%>
+      <br>
+      <%= hidden_field_tag :option, 'Join' %>
+      <%= submit_tag "Inscribir Curso", class: "btn btn-primary" %>
+    </div>
+  <h4><b><%= @joined %></b></h4>
+  <% end %>
+<% end %>
+
+<br><br>
+<div class="btn-group">
+  <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+</div>

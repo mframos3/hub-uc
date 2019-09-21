@@ -1,0 +1,10 @@
+<h1>Revisar Solicitud De Moderador</h1>
+<%if (! current_user) or !(current_user.has_role? :admin or current_user.has_role? :moderator) %>
+    <% raise CanCan::AccessDenied.new("Not authorized!",:create, ModeratorRequest) %>
+<%end%>
+
+<%= render 'form', moderator_request: @moderator_request %>
+<br>
+<div class="btn-group">
+  <%= link_to 'Volver', moderator_request_path(@moderator_request), class: "btn btn-default" %>
+</div>

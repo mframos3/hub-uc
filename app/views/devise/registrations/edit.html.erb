@@ -1,0 +1,60 @@
+<h2>Editar Usuario</h2> <!-- <%=resource_name.to_s.humanize%> en vez de usuario -->
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+  <div class="form-inputs">
+
+  <div class="form-group">
+    <%= f.label :email %><br />
+    <%= f.email_field :email, class: 'form-control', autofocus: true, autocomplete: "email" %>
+  </div>
+
+  <div class="form-group">
+        <%= f.label :nombre %>
+        <%= f.text_field :name, class: "form-control", :autofocus => true , :required => 'required'%>
+      </div>
+
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <div>Esperando Confirmación Para: <%= resource.unconfirmed_email %></div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :nueva_contraseña %> <i>(deja en blanco si no quieres cambiarla)</i><br />
+    <%= f.password_field :password,class: 'form-control', autocomplete: "new-password" %>
+    <% if @minimum_password_length %>
+      <br />
+      <em><%= @minimum_password_length %> caracteres mínimo</em>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :confirmación_nueva_contraseña %><br />
+    <%= f.password_field :password_confirmation,class: 'form-control', autocomplete: "new-password" %>
+  </div>
+  <div class="form-group">
+   <%= f.label :Imagen %>
+    <%= f.file_field :image %>
+</div>
+
+  <div class="form-group">
+    <%= f.label :contraseña_actual %> <i>(necesitamos tu contraseña para confirmar tus cambios)</i><br />
+    <%= f.password_field :current_password,class: 'form-control', autocomplete: "current-password" %>
+  </div>
+
+  <div class="form-group">
+        <%= f.hidden_field :last_seen_at, value: Time.current %>
+        <%= f.submit "Actualizar", class: "btn btn-primary" %>
+  </div>
+
+<% end %>
+  </div>
+  <div class="panel-footer">
+
+<h3>Cancela Mi Cuenta</h3>
+
+<p>Insatisfech@? <%= button_to "Cancela Mi Cuenta", registration_path(resource_name), data: { confirm: "Estás segur@?" }, method: :delete, class: "btn btn-default" %></p>
+</div>

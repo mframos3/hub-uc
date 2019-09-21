@@ -1,0 +1,27 @@
+<div class="page-header">
+  <% if current_user and current_user.has_role? :admin %>
+    <div class="actions">
+    <%= link_to '<i class="glyphicon glyphicon-plus"></i> Añadir Campus'.html_safe, new_location_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+<h1><i class="glyphicon glyphicon-th-list"></i> Lista De Campus</h1>
+<br>
+<%= form_tag(locations_path, method: :get) do %>
+  <div class="form-group">
+    <%= text_field_tag(:search, params[:search]) %>
+    <%= submit_tag "Buscar", class: "btn btn-primary" %>
+  </div>
+<% end %>
+<% @locations.each do |location| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to location.name, location %>
+      <br>
+    </h2>
+  </div>
+  <% end %>
+<br><br>
+<div class="btn-group">
+  <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+</div>

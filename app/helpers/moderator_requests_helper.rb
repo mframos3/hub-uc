@@ -1,0 +1,2 @@
+module ModeratorRequestsHelper
+end

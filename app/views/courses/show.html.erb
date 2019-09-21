@@ -1,0 +1,52 @@
+<div class="page-header">
+ <h1><%= @course.name %></a><br></h1>
+ <h1><small><%= @course.initials %></small></h1>
+
+ <% if current_user and current_user.has_role? :admin %>
+ <div class="btn-group">
+  <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_course_path(@course), class: "btn btn-primary" %>
+  <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar'.html_safe, course_path(:id => @course.id, :origin => @origin), method: :delete, data: { confirm: 'Estás Seguro(a)?' }, class: "btn btn-warning" %>
+ </div>
+<% end %>
+</div>
+
+<% if is_joined_to_course?(@course.id) && current_user %>
+  <% if !@is_moderator %>
+    <div class="btn-group">
+      <%= link_to '<i class="glyphicon glyphicon-send"></i> Enviar Solicitud De Moderador'.html_safe, new_moderator_request_path(:course_id => @course.id), class: "btn btn-success" %>
+    </div>
+  <% end %>
+  <div class="btn-group">
+    <%= link_to '<i class="glyphicon glyphicon-remove-circle"></i> Cancelar Inscripción'.html_safe, course_path(:id => @course.id, :unjoin => true, :origin => @origin), class: "btn btn-danger" %>
+  </div>
+  <br><br>
+  <div class="actions">
+    <%= link_to '<i class="glyphicon glyphicon-plus"></i> Crear Publicación'.html_safe, new_post_path(:course_id => @course.id), class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<h1><i class="glyphicon glyphicon-pushpin"></i> Publicaciones Del Curso</h1>
+<% @publications.each do |pub| %>
+  <div class="link row clearfix">
+    <h2>
+      <%= link_to pub.title, post_path(:id => pub.id, :origin => 'course') %><br>
+      <small class="author">Publicado hace <%= time_ago_in_words(pub.created_at, local: :'es-CL') %> por 
+      <%= link_to pub.user.name, user_path(pub.user.id) %></small>
+    </h2>
+  </div>
+<% end %>
+<br><br>
+
+<% if @origin == 'home' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+  </div>
+<% elsif @origin == 'profile' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', user_path(:id => @profile), class: "btn btn-default" %>
+  </div>
+<% else %>
+  <div class="btn-group">
+    <%= link_to 'Volver', courses_path(:option => @origin), class: "btn btn-default" %>
+  </div>
+<% end %>

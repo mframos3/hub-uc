@@ -1,0 +1,43 @@
+<%= form_with(model: message, local: true) do |form| %>
+  <% if message.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(message.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+      <% message.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="form-inputs">
+    <div class="form-group">
+        <%= form.label :Para %>
+        <% if @origin == 'profile' %>
+          <%= form.text_field :receiver_id, :value => @receiver.email, class: "form-control",id: :message_receiver, :required => 'required' %>
+        <% else %>
+          <%= form.text_field :receiver_id, class: "form-control",id: :message_receiver, :required => 'required' %>
+        <% end %>
+        <%=@warning%>
+      </div>
+      <div class="form-group">
+        <%= form.label :Asunto %>
+        <%= form.text_field :title, class: "form-control",id: :message_title, :required => 'required' %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :Contenido %>
+        <%= form.text_field :content, class: "form-control",id: :message_content , :required => 'required' %>
+        <%=@maximum%>
+      </div>
+      
+      <%= form.hidden_field :sender_id, :value => current_user.id %>
+      <div class="actions">
+          <%= form.submit "Enviar", class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+</div>
+<%end%>

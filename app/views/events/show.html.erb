@@ -1,0 +1,75 @@
+<div class="page-header">
+  <h1><%= @event.name %></a><br> <small>Creado por
+   <%= link_to @event.user.name, user_path(@event.user.id) %></small></h1>
+</div>
+
+<h4><i class="glyphicon glyphicon-user"></i> <strong>Autor:</strong>
+    <%= @event.user.name %></h4>
+<h4><i class="glyphicon glyphicon-book"></i> <strong>Sala:</strong>
+    <%= @event.room.name %></h4>
+
+<% if @event.e_type == 'Study' %>
+  <h4><i class="glyphicon glyphicon-tag"></i> <strong>Tipo De Evento:</strong> Grupo De Estudio</h4>
+  <h4><i class="glyphicon glyphicon-education"></i> <strong>Curso:</strong>
+    <%= @event.course.initials %> - <%= @event.course.name %></h4>
+  <h4><i class="glyphicon glyphicon-info-sign"></i> <strong>Cantidad Máxima De Personas:</strong>
+    <%= @event.max_amount %></h4>
+<% elsif @event.e_type == 'Offer' %>
+  <h4><i class="glyphicon glyphicon-tag"></i> <strong>Tipo De Evento:</strong> Aviso De Clases Particulares (Ofrecer)</h4>
+  <h4><i class="glyphicon glyphicon-education"></i> <strong>Curso:</strong>
+    <%= @event.course.initials %> - <%= @event.course.name %></h4>
+  <h4><i class="glyphicon glyphicon-usd"></i> <strong>Precio:</strong>
+    <%= @event.price %></h4>
+<% elsif @event.e_type == 'Search' %>
+  <h4><i class="glyphicon glyphicon-tag"></i> <strong>Tipo De Evento:</strong> Aviso De Clases Particulares (Buscar)</h4>
+  <h4><i class="glyphicon glyphicon-education"></i> <strong>Curso:</strong>
+    <%= @event.course.initials %> - <%= @event.course.name %></h4>
+<% elsif @event.e_type == 'Busy' %>
+  <h4><i class="glyphicon glyphicon-tag"></i> <strong>Tipo De Evento:</strong> Aviso De Sala Ocupada</h4>
+  <h4><i class="glyphicon glyphicon-education"></i> <strong>Curso:</strong>
+    <%= @event.course.initials %> - <%= @event.course.name %></h4>
+<% end %>
+
+<h4><i class="glyphicon glyphicon-calendar"></i> <strong>Fecha De Término:</strong>
+    <%= @event.f_date %></h4>
+
+<% if @event.e_type == 'Study' || @event.e_type == 'Search'%>
+  <h4><i class="glyphicon glyphicon-user"></i><i class="glyphicon glyphicon-user"></i> <strong>Miembros Actuales: </strong> </h4>
+  <h4> - <%= link_to @event.user.name, user_path(@event.user_id) %> </h4>
+  <% @members.each do |member| %>
+    <h4> - <%= link_to member.name, user_path(member.id) %> </h4>
+  <% end %>
+  <br><br>
+  <% if current_user && !@is_member %>
+    <div class="btn-group">
+      <%= link_to '<i class="glyphicon glyphicon-ok-circle"></i> Unirse Al Evento'.html_safe, event_path(:id => @event.id, :join => true, :origin => @origin), class: "btn btn-success" %>
+    </div>
+    <br><br>
+  <% elsif current_user && @is_member && (current_user.id != @event.user_id) %>
+    <div class="btn-group">
+      <%= link_to '<i class="glyphicon glyphicon-remove-circle"></i> Salir Del Evento'.html_safe, event_path(:id => @event.id, :unjoin => true, :origin => @origin), class: "btn btn-danger" %>
+    </div>
+    <br><br>
+  <% end %>
+<% end %>
+
+<% if current_user && (current_user.has_role? :admin or current_user.id == @event.user_id or @is_moderator) %>
+  <div class="btn-group">
+    <%= link_to '<i class="glyphicon glyphicon-edit"></i> Editar'.html_safe, edit_event_path(@event), class: "btn btn-primary" %>
+    <%= link_to '<i class="glyphicon glyphicon-trash"></i> Eliminar'.html_safe, event_path(:id => @event.id, :origin => @origin), method: :delete, data: {confirm: 'Estás Seguro(a)?'}, class: "btn btn-warning" %>
+  </div>
+<% end %>
+<br><br>
+<% if @origin == 'home' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', root_path, class: "btn btn-default" %>
+  </div>
+<% elsif @origin == 'room' %>
+  <div class="btn-group">
+    <%= link_to 'Volver', room_path(:id => @event.room_id), class: "btn btn-default" %>
+  </div>
+<% else %>
+  <div class="btn-group">
+    <%= link_to 'Volver', events_path(:option => @origin), class: "btn btn-default" %>
+  </div>
+<% end %>
