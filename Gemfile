@@ -11,7 +11,7 @@ gem 'acts_as_votable', '~> 0.12.0'
 
 gem 'bootstrap-sass'
 # Use for upload files
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.3'
 
 # Use for API
 gem 'httparty'
